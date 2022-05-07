@@ -3,6 +3,8 @@ from metro import Metro
 if __name__ == '__main__':
     q = Metro()
     q.add_line('red')
+    q.delete_line(3)
+    q.update_color(7, 'white')
 
     # try:
     #     connection = pymysql.connect(

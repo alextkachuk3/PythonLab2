@@ -68,12 +68,25 @@ class Metro:
         finally:
             self.connection.commit()
 
-# def delete_line(self, id: str):
-#
-#
-# def update_color(self, id: str, color: str):
-#
-#
+    def delete_line(self, id: int):
+        try:
+            with self.connection.cursor() as cursor:
+                delete_line_query = "DELETE FROM metro_lines WHERE id=(%s)"
+                delete_line_id = id
+                cursor.execute(delete_line_query, delete_line_id)
+        finally:
+            self.connection.commit()
+
+    def update_color(self, id: str, color: str):
+        try:
+            with self.connection.cursor() as cursor:
+                update_color_line_query = "UPDATE metro_lines SET color = %s WHERE id = %s"
+                update_color_line_val = (color, id)
+                cursor.execute(update_color_line_query, update_color_line_val)
+        finally:
+            self.connection.commit()
+
+
 # def add_station_to_line(self, line_id: str, name: str, open: str, close: str, id=None):
 #
 #

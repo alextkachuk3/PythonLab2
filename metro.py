@@ -143,5 +143,10 @@ class Metro:
             station = cursor.fetchall()[0]
             return station[0], station[1], str(station[2]), str(station[3]), station[4]
 
-   # def find_line(self, id):
-
+    def find_line(self, id):
+        with self.connection.cursor() as cursor:
+            line_find_query = "SELECT * FROM metro_lines WHERE id = %s"
+            line_find_val = id
+            cursor.execute(line_find_query, line_find_val)
+            line = cursor.fetchall()[0]
+            return line[0], line[1]

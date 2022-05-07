@@ -1,18 +1,8 @@
-import pymysql as pymysql
-
-from config import host, user, password, db_name
-
 from metro import Metro
 
-def print_hi(name):
-    print(f'Hi, {name}')
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
     q = Metro()
+    q.add_line('red')
 
     # try:
     #     connection = pymysql.connect(

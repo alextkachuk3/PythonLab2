@@ -2,10 +2,8 @@ from metro import Metro
 
 if __name__ == '__main__':
     q = Metro()
-    q.add_line('red')
-    q.delete_line(3)
-    q.update_color(7, 'white')
-    q.add_station('Akadem', 2, '00:00:00', '00:00:00')
+    q.add_station("Nivki", 5, "06:00:00", "23:00:00")
+    print(q.stations_list())
 
     # try:
     #     connection = pymysql.connect(

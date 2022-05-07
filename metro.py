@@ -98,10 +98,28 @@ class Metro:
         finally:
             self.connection.commit()
 
-# def delete_station(self, station_id):
-#
-#
-# def find_station(self, station_id):
-#
-#
-# def find_index_of_station(self, station_id):
+    def delete_station(self, id):
+        try:
+            with self.connection.cursor() as cursor:
+                delete_station_query = "DELETE FROM metro_stations WHERE id=(%s)"
+                delete_station_val = id
+                cursor.execute(delete_station_query, delete_station_val)
+        finally:
+            self.connection.commit()
+
+    def stations_list(self, row_count=100):
+        with self.connection.cursor() as cursor:
+            select_station_list_query = "SELECT * FROM metro_stations LIMIT %s"
+            select_station_list_val = row_count
+            cursor.execute(select_station_list_query, select_station_list_val)
+            stations = cursor.fetchall()
+
+            result = []
+
+        for station in stations:
+            result.append([station[0], station[1], str(station[2]), str(station[3]), station[4]])
+
+        return result
+
+    # def find_station(self, station_id):
+    #

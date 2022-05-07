@@ -5,6 +5,7 @@ if __name__ == '__main__':
     q.add_line('red')
     q.delete_line(3)
     q.update_color(7, 'white')
+    q.add_station('Akadem', 2, '00:00:00', '00:00:00')
 
     # try:
     #     connection = pymysql.connect(

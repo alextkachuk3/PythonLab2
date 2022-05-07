@@ -29,8 +29,6 @@ class Metro:
 
     def init_tables(self):
         with self.connection.cursor() as cursor:
-            cursor.execute('SHOW TABLES')
-
             table_list = self.get_tables_list()
 
             if 'metro_lines' not in table_list:
@@ -42,22 +40,26 @@ class Metro:
                     print("Metro lines table created successfully")
                 except pymysql.err.OperationalError:
                     print('Metro lines table creating failed')
+                finally:
+                    self.connection.commit()
 
-        if 'metro_stations' not in table_list:
-            try:
-                create_metro_stations_table_query = "CREATE TABLE metro_stations(" \
-                                                    "id INT AUTO_INCREMENT PRIMARY KEY, " \
-                                                    "name VARCHAR(100), " \
-                                                    "open TIME, " \
-                                                    "close TIME, " \
-                                                    "metro_line_id INT, " \
-                                                    "FOREIGN KEY (metro_line_id) " \
-                                                    "REFERENCES metro_lines(id) " \
-                                                    "ON UPDATE CASCADE ON DELETE RESTRICT);"
-                cursor.execute(create_metro_stations_table_query)
-                print("Metro stations table created successfully")
-            except pymysql.err.OperationalError:
-                print('Metro stations table creating failed')
+            if 'metro_stations' not in table_list:
+                try:
+                    create_metro_stations_table_query = "CREATE TABLE metro_stations(" \
+                                                        "id INT AUTO_INCREMENT PRIMARY KEY, " \
+                                                        "name VARCHAR(100), " \
+                                                        "open TIME, " \
+                                                        "close TIME, " \
+                                                        "metro_line_id INT, " \
+                                                        "FOREIGN KEY (metro_line_id) " \
+                                                        "REFERENCES metro_lines(id) " \
+                                                        "ON UPDATE CASCADE ON DELETE CASCADE);"
+                    cursor.execute(create_metro_stations_table_query)
+                    print("Metro stations table created successfully")
+                except pymysql.err.OperationalError:
+                    print('Metro stations table creating failed')
+                finally:
+                    self.connection.commit()
 
     def add_line(self, color: str):
         try:
@@ -86,10 +88,16 @@ class Metro:
         finally:
             self.connection.commit()
 
+    def add_station(self, name: str, line_id: int, open: str, close: str):
+        try:
+            with self.connection.cursor() as cursor:
+                add_station_query = "INSERT INTO metro_stations (NAME, OPEN, CLOSE, METRO_LINE_ID)" \
+                                    " VALUES (%s, %s, %s, %s) "
+                add_station_val = (name, open, close, line_id)
+                cursor.execute(add_station_query, add_station_val)
+        finally:
+            self.connection.commit()
 
-# def add_station_to_line(self, line_id: str, name: str, open: str, close: str, id=None):
-#
-#
 # def delete_station(self, station_id):
 #
 #

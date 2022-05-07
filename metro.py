@@ -114,10 +114,24 @@ class Metro:
             cursor.execute(select_station_list_query, select_station_list_val)
             stations = cursor.fetchall()
 
-            result = []
+        result = []
 
         for station in stations:
-            result.append([station[0], station[1], str(station[2]), str(station[3]), station[4]])
+            result.append((station[0], station[1], str(station[2]), str(station[3]), station[4]))
+
+        return result
+
+    def lines_list(self, row_count=100):
+        with self.connection.cursor() as cursor:
+            select_lines_list_query = "SELECT * FROM metro_lines LIMIT %s"
+            select_lines_list_val = row_count
+            cursor.execute(select_lines_list_query, select_lines_list_val)
+            lines = cursor.fetchall()
+
+        result = []
+
+        for line in lines:
+            result.append((line[0], line[1]))
 
         return result
 

@@ -1,13 +1,11 @@
 import pymysql as pymysql
 
-from config import host, user, password, db_name
-
 
 class Metro:
-    def __init__(self):
+    def __init__(self, host, port, user, password, db_name):
         self.connection = pymysql.connect(
             host=host,
-            port=3306,
+            port=port,
             user=user,
             password=password,
             database=db_name
@@ -82,9 +80,9 @@ class Metro:
     def update_color(self, id: str, color: str):
         try:
             with self.connection.cursor() as cursor:
-                update_color_line_query = "UPDATE metro_lines SET color = %s WHERE id = %s"
-                update_color_line_val = (color, id)
-                cursor.execute(update_color_line_query, update_color_line_val)
+                update_line_color_query = "UPDATE metro_lines SET color = %s WHERE id = %s"
+                update_line_color_val = (color, id)
+                cursor.execute(update_line_color_query, update_line_color_val)
         finally:
             self.connection.commit()
 
@@ -135,18 +133,34 @@ class Metro:
 
         return result
 
-    def find_station(self, id):
+    def find_station(self, station_name):
         with self.connection.cursor() as cursor:
-            station_find_query = "SELECT * FROM metro_stations WHERE id = %s"
-            station_find_val = id
+            station_find_query = "SELECT * FROM metro_stations WHERE name = %s"
+            station_find_val = station_name
             cursor.execute(station_find_query, station_find_val)
             station = cursor.fetchall()[0]
             return station[0], station[1], str(station[2]), str(station[3]), station[4]
 
-    def find_line(self, id):
+    def find_line(self, line_id):
         with self.connection.cursor() as cursor:
             line_find_query = "SELECT * FROM metro_lines WHERE id = %s"
-            line_find_val = id
+            line_find_val = line_id
             cursor.execute(line_find_query, line_find_val)
             line = cursor.fetchall()[0]
             return line[0], line[1]
+
+    def count_of_stations_on_line(self, line_id):
+        with self.connection.cursor() as cursor:
+            station_count_query = "SELECT COUNT(*) AS stations_count FROM metro_stations WHERE metro_line_id = %s"
+            station_count_val = line_id
+            cursor.execute(station_count_query, station_count_val)
+            return cursor.fetchall()[0][0]
+
+    def update_station_name(self, station_id, new_station_name):
+        try:
+            with self.connection.cursor() as cursor:
+                update_station_name_query = "UPDATE metro_stations SET name = %s WHERE id = %s"
+                update_station_name_val = (new_station_name, station_id)
+                cursor.execute(update_station_name_query, update_station_name_val)
+        finally:
+            self.connection.commit()
